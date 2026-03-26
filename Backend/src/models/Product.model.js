@@ -4,7 +4,8 @@ const productSchema = new mongoose.Schema({
     title:{
         type:String,
         required:true,
-        trim:true
+        trim:true,
+        index:true
     },
     description:{
         type:String,
@@ -17,16 +18,18 @@ const productSchema = new mongoose.Schema({
     },
     stock:{
         type:Number,
-        required:true,
+        
         default:0
     },
     image:{
         type:String,
+        default:""
 
     },
     category:{
         type:String,
-        required:true
+        required:true,
+        enum:["electronics","clothing","food","books"]
     }
 },{timestamps:true})
 

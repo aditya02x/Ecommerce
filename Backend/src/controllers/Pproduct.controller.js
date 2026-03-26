@@ -33,3 +33,62 @@ export const addProduct = async (req, res) => {
         });
     }
 };
+
+
+export const getAllProducts = async (req, res) => {
+    try {
+        // pagination
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        // fetch products
+        const products = await Product.find()
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        // total count (for frontend pagination)
+        const totalProducts = await Product.countDocuments();
+
+        return res.status(200).json({
+            message: "Products fetched successfully",
+            currentPage: page,
+            totalPages: Math.ceil(totalProducts / limit),
+            totalProducts,
+            products
+        });
+
+    } catch (error) {
+        console.error(error.message);
+
+        return res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
+
+export const getProductById = async (req,res)=>{
+    try {
+
+        const {id } = req.params;
+        const product = await Product.findById(id)
+        if(!product){
+            return res.status(400).json({message:"Product not found"})
+        }
+
+        return res.status(200).json({message:"product fetched sucessfully",
+            product
+        })
+        
+    } catch (error) {
+        console.error(error.message);
+
+        return res.status(500).json({
+            message:"server error"
+        })
+        
+    }
+}

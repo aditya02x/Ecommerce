@@ -185,3 +185,33 @@ export const getCart = async (req,res)=>{
         })
     }
 }
+
+export const removeFromCart = async (req,res)=>{
+    try {
+        const {productId} = req.body
+        const userId = req.user.id
+       
+        //validate
+        if(!productId){
+            return res.status(400).json({
+                message:"Product id is required"
+            })
+        }
+
+        if(!cart){
+            return res.status(404).json({
+                message:"cart not found"
+            })
+        }
+
+        //reomve 
+        cart.products = cart.products.filter((item)=> item.productId.toString() !== productId)
+
+        await cart.save()
+    } catch (error) {
+        console.error(error.message)
+        return res.status(500).json({
+            message:"Server Error"
+        })
+    }
+}

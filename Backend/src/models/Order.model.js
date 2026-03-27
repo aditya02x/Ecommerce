@@ -18,7 +18,18 @@ const orderSchema = new mongoose.Schema({
                 required:true
             }
         }
-    ]
+    ],
+    totalAmount:{
+        type:Number,
+        min:0,
+        required:true
+    },
+    Status:{
+        required:true,
+        enum:["pending","paid","shipped","delivered"],
+        default:"pending"
+
+    }
 },{timestamps:true})
 
 export default mongoose.model("Order",orderSchema)

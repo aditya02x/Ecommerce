@@ -1,6 +1,12 @@
 import mongoose from 'mongoose'
 
 const orderSchema = new mongoose.Schema({
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required:true
+
+    },
     products:[
         {
             productId:{
@@ -24,8 +30,8 @@ const orderSchema = new mongoose.Schema({
         min:0,
         required:true
     },
-    Status:{
-        required:true,
+    status:{
+        type:String,
         enum:["pending","paid","shipped","delivered"],
         default:"pending"
 

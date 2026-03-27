@@ -205,7 +205,7 @@ export const removeFromCart = async (req,res)=>{
         }
 
         //reomve 
-        cart.products = Cart.products.filter((item)=> item.productId.toString() !== productId)
+        Cart.products = Cart.products.filter((item)=> item.productId.toString() !== productId)
 
         await cart.save()
     } catch (error) {
@@ -216,7 +216,7 @@ export const removeFromCart = async (req,res)=>{
     }
 }
 
-export  const updateCart = async (req,res){
+export  const updateCart = async (req,res)=>{
     try {
 
         const {productId , quantity} = req.body
@@ -237,7 +237,7 @@ export  const updateCart = async (req,res){
             return res.status(404).json({ message: "Product not in cart" });
         }
 
-        await item.quantity = quantity;
+        item.quantity = quantity;
         await cart.save()
 
         res.status(200).json({
@@ -251,3 +251,5 @@ export  const updateCart = async (req,res){
         
     }
 }
+
+

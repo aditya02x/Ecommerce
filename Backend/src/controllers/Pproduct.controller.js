@@ -92,3 +92,63 @@ export const getProductById = async (req,res)=>{
         
     }
 }
+export const addToCart = async (req, res) => {
+  try {
+    const { productId, quantity = 1 } = req.body;
+    const userId = req.user.id;
+
+    // validate input
+    if (!productId) {
+      return res.status(400).json({
+        message: "Product ID is required",
+      });
+    }
+
+    // check product exists
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    // find user's cart
+    let cart = await Cart.findOne({ user: userId });
+
+    // if no cart → create new
+    if (!cart) {
+      cart = new Cart({
+        user: userId,
+        products: [{ productId, quantity }],
+      });
+    } else {
+      // check if product already exists in cart
+      const existingProduct = cart.products.find(
+        (item) => item.productId.toString() === productId
+      );
+
+      if (existingProduct) {
+        // increase quantity
+        existingProduct.quantity += quantity;
+      } else {
+        // add new product
+        cart.products.push({ productId, quantity });
+      }
+    }
+
+    // save cart
+    await cart.save();
+
+    return res.status(200).json({
+      message: "Product added to cart",
+      cart,
+    });
+
+  } catch (error) {
+    console.error(error.message);
+
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+};

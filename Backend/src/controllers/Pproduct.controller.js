@@ -1,4 +1,5 @@
 import Product from "../models/Product.model.js";
+import Cart from '../models/Cart.model.js'
 
 export const addProduct = async (req, res) => {
     try {
@@ -92,6 +93,9 @@ export const getProductById = async (req,res)=>{
         
     }
 }
+import Cart from "../models/Cart.model.js";
+import Product from "../models/Product.model.js";
+
 export const addToCart = async (req, res) => {
   try {
     const { productId, quantity = 1 } = req.body;
@@ -152,3 +156,32 @@ export const addToCart = async (req, res) => {
     });
   }
 };
+
+
+export const getCart = async (req,res)=>{
+    try {
+
+        const userId = req.user.id
+
+        //find cart
+        const cart = await cart.findOne({user:userId}).populate("products.productId");
+
+        // if no cart 
+
+        if(!cart){
+            return res.status(404).json({message:"Cart does not exist"})
+        }
+        return res.status(200).json({
+            message:"Cart fetched sucessfully",
+            cart
+        });
+
+
+        
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).json({
+            message:"Server Error"
+        })
+    }
+}

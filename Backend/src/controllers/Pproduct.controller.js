@@ -205,7 +205,7 @@ export const removeFromCart = async (req,res)=>{
         }
 
         //reomve 
-        cart.products = cart.products.filter((item)=> item.productId.toString() !== productId)
+        cart.products = Cart.products.filter((item)=> item.productId.toString() !== productId)
 
         await cart.save()
     } catch (error) {
@@ -213,5 +213,41 @@ export const removeFromCart = async (req,res)=>{
         return res.status(500).json({
             message:"Server Error"
         })
+    }
+}
+
+export  const updateCart = async (req,res){
+    try {
+
+        const {productId , quantity} = req.body
+        const userId = req.user.id
+
+        if(!productId || quantity == null || quantity < 1){
+            return res.status(404).json({message:"products are required"})
+
+        }
+
+        const cart = await Cart.findOne({user : userId});
+
+        if(!cart){
+            return res.status(404).json({message:"cart not found"})
+        }
+        const item = cart.products.find((p)=> p.productId.toString() === productId)
+        if(!item){
+            return res.status(404).json({ message: "Product not in cart" });
+        }
+
+        await item.quantity = quantity;
+        await cart.save()
+
+        res.status(200).json({
+  message: "Cart updated",
+  cart
+});
+        
+    } catch (error) {
+        console.error(error.message)
+        return res.status(500).json({message:"Server Error"})
+        
     }
 }

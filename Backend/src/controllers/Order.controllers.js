@@ -16,7 +16,8 @@ export const placeOrder = async (req,res) =>{
         
     } catch (error) 
     {
-        c
+        console.error(error.message)
+        return res.status(500).json({message:"Internal Server Error"})
         
     }
 }

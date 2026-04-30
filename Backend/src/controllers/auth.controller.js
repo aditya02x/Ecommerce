@@ -48,12 +48,6 @@ export const register = async (req, res) => {
     }
 };
 
-import User from "../models/User.model.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-
-export const loginUser = async (req, res) => {
-    try {
         const { email, password } = req.body;
 
         // validation
